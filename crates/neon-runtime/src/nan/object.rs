@@ -3,6 +3,13 @@
 /// Mutates the `out` argument provided to refer to a newly created `v8::Object`.
 pub use neon_sys::Neon_Object_New as new;
 
+/// Returns a `u8` bit field specifying the property's attributes (a `v8::PropertyAttribute`).
+pub use neon_sys::Neon_Object_GetPropertyAttributes as get_property_attributes;
+
+/// Mutates the `out` argument provided to refer to a newly created `v8::Array` containing the
+/// names of the `v8::Object`'s property names. Returns `false` if the result is empty.
+pub use neon_sys::Neon_Object_GetPropertyNames as get_property_names;
+
 /// Mutates the `out` argument provided to refer to a newly created `v8::Array` containing the
 /// names of the `v8::Object`'s own property names. Returns `false` if the result is empty.
 pub use neon_sys::Neon_Object_GetOwnPropertyNames as get_own_property_names;

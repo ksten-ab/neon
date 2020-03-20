@@ -52,6 +52,17 @@ extern "C" void Neon_Object_New(v8::Local<v8::Object> *out) {
   *out = Nan::New<v8::Object>();
 }
 
+extern "C" uint8_t Neon_Object_GetPropertyAttributes(v8::Local<v8::Object> obj, v8::Local<v8::Value> key) {
+  v8::PropertyAttribute attribs = Nan::GetPropertyAttributes(obj, key);
+  uint8_t flags = (uint8_t) attribs;
+  return flags;
+}
+
+extern "C" bool Neon_Object_GetPropertyNames(v8::Local<v8::Array> *out, v8::Local<v8::Object> obj) {
+  Nan::MaybeLocal<v8::Array> maybe = Nan::GetPropertyNames(obj);
+  return maybe.ToLocal(out);
+}
+
 extern "C" bool Neon_Object_GetOwnPropertyNames(v8::Local<v8::Array> *out, v8::Local<v8::Object> obj) {
   Nan::MaybeLocal<v8::Array> maybe = Nan::GetOwnPropertyNames(obj);
   return maybe.ToLocal(out);

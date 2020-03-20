@@ -617,3 +617,42 @@ impl<T: Object> ValueInternal for JsFunction<T> {
         unsafe { neon_runtime::tag::is_function(other.to_raw()) }
     }
 }
+
+/// JsPropertyAttributes are flags used to control the behavior
+/// of properties set on a JavaScript object.
+pub struct JsPropertyAttributes {
+    attribs: u8,
+}
+
+impl JsPropertyAttributes {
+    pub fn is_writeable(&self) -> bool {
+        !V8PropertyAttribute::ReadOnly.test(self.attribs)
+    }
+
+    pub fn is_enumerable(&self) -> bool {
+        !V8PropertyAttribute::DontEnum.test(self.attribs)
+    }
+
+    pub fn is_configurable(&self) -> bool {
+        !V8PropertyAttribute::DontDelete.test(self.attribs)
+    }
+}
+
+#[repr(u8)]
+#[derive(Copy, Clone)]
+enum V8PropertyAttribute {
+    // /** None. **/
+    // None = 0,
+    /** ReadOnly, i.e., not writable. **/
+    ReadOnly = 1 << 0,
+    /** DontEnum, i.e., not enumerable. **/
+    DontEnum = 1 << 1,
+    /** DontDelete, i.e., not configurable. **/
+    DontDelete = 1 << 2
+}
+
+impl V8PropertyAttribute {
+    fn test(self, flags: u8) -> bool {
+        (flags & (self as u8)) == (self as u8)
+    }
+}
