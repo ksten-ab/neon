@@ -9,7 +9,7 @@ pub use self::traits::*;
 mod traits {
     use neon_runtime::raw;
     use handle::{Handle, Managed};
-    use types::{Value, JsValue, JsArray, build};
+    use types::{Value, JsValue, JsArray, JsPropertyAttributes, build};
     use types::utf8::Utf8;
     use context::Context;
     use result::{NeonResult, JsResult, Throw};
@@ -56,6 +56,11 @@ mod traits {
     pub trait Object: Value {
         fn get<'a, C: Context<'a>, K: PropertyKey>(self, _: &mut C, key: K) -> NeonResult<Handle<'a, JsValue>> {
             build(|out| { unsafe { key.get_from(out, self.to_raw()) } })
+        }
+
+        fn get_property_attributes<'a, C: Context<'a>, K: Value>(self, _: &mut C, key: Handle<'a, K>) -> JsPropertyAttributes {
+            let attribs = unsafe { neon_runtime::object::get_property_attributes(self.to_raw(), key.to_raw()) };
+            JsPropertyAttributes { attribs }
         }
 
         fn get_property_names<'a, C: Context<'a>>(self, _: &mut C) -> JsResult<'a, JsArray> {
@@ -181,15 +186,6 @@ mod traits {
     pub trait Object: Value {
         fn get<'a, C: Context<'a>, K: PropertyKey>(self, cx: &mut C, key: K) -> NeonResult<Handle<'a, JsValue>> {
             build(|out| { unsafe { key.get_from(cx, out, self.to_raw()) } })
-        }
-
-        fn get_property_attributes<'a, C: Context<'a>>(self, _: &mut C) -> JsPropertyAttributes {
-            let attribs = unsafe { neon_runtime::object::get_property_attributes(out, self.to_raw()) };
-            JsPropertyAttributes { attribs }
-        }
-
-        fn get_property_names<'a, C: Context<'a>>(self, _: &mut C) -> JsResult<'a, JsArray> {
-            build(|out| { unsafe { neon_runtime::object::get_property_names(out, self.to_raw()) } })
         }
 
         fn get_own_property_names<'a, C: Context<'a>>(self, _: &mut C) -> JsResult<'a, JsArray> {

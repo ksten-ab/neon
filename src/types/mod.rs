@@ -621,7 +621,7 @@ impl<T: Object> ValueInternal for JsFunction<T> {
 /// JsPropertyAttributes are flags used to control the behavior
 /// of properties set on a JavaScript object.
 pub struct JsPropertyAttributes {
-    attribs: u8,
+    pub(crate) attribs: u8,
 }
 
 impl JsPropertyAttributes {
